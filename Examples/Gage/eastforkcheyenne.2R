@@ -1,0 +1,58 @@
+
+my.approach <- setApproach(Lapproach=29,
+                           nvalue=0.03,
+                           X=c(-205.8,   -107,   0, 95.3, 144.7),
+                           Y=c( 10.46,  5.62,    1, 3.22, 7.34));
+my.culvert <- setCulvert(station.id="07227460",
+         station.name="East Fork Cheyenne Creek Trib. near Channing, Texas",
+                           type="box",
+                           material="concrete",
+                           width=24,
+                           diameter=4,
+                           web=3,
+                           theta=45,
+                           nvalue=0.017,
+                           beveling=0.03,
+                           zusinvert=0.93,
+                           zdsinvert=0.85,
+                           L=42.6);
+computeFlow(culvert=my.culvert, approach=my.approach,
+            h1=3.05, h4=2.04);
+computeFlow(culvert=my.culvert, approach=my.approach,
+            h1=2.92, h4=1.76);
+
+capgraph(h1=c(3.05, 2.92),
+         h4=c(2.04, 1.76),
+         culvert=my.culvert, approach=my.approach);
+
+
+
+
+my.culvert <- setCulvert(station.id="07227460",
+         station.name="East Fork Cheyenne Creek Trib. near Channing, Texas",
+                           type="box",
+                           material="concrete",
+                           width=6,
+                           diameter=4,
+                           number.of.barrels=4,
+                           theta=45,
+                           nvalue=0.017,
+                           beveling=0.03,
+                           zusinvert=0.93,
+                           zdsinvert=0.85,
+                           L=42.6)
+computeFlow(culvert=my.culvert, approach=my.approach,
+            h1=3.05, h4=2.04);
+computeFlow(culvert=my.culvert, approach=my.approach,
+            h1=2.92, h4=1.76);
+capgraph(h1=c(3.05, 2.92),
+         h4=c(2.04, 1.76),
+         culvert=my.culvert, approach=my.approach);
+
+
+PC <- getPerformanceCurveTW(seq(2,4,by=.1), TW=1.76,
+                            culvert=my.culvert,
+                            approach=my.approach, silent=TRUE);
+plot(PC$Qmean, PC$HW, type="l");
+
+

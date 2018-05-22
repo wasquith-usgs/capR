@@ -1,0 +1,18 @@
+library(tcltk)
+
+tt <- tktoplevel()
+label.w <- tklabel(tt, text="capR")
+button.w <- tkbutton(tt, text="Push",
+                          command=function()cat("OW!\n"))
+menu.w <- tkmenubutton(tt,
+                       text="Material")
+tkpack(label.w, button.w, menu.w)
+
+File.menu <- tkmenu(tt);
+quit.menu <- tkmenu(File.menu);
+
+tkadd(File.menu, "cascade", label="Quit", menu=quit.menu);
+tkadd(quit.menu, "command", label="Save workspace", command=quote(q("yes")))
+tkadd(quit.menu, "command", label="Don't save workspace", command=quote(q("no")))
+tkpack(File.menu)
+

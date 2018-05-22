@@ -1,0 +1,35 @@
+# EXAMPLE 8 IN TWRI
+US.depth <- 8
+DS.depth <- 1
+my.approach <- setApproach(Lapproach=0,
+                           X=c(0,0,200,200), Y=c(15,0,0,15));
+my.culvert <- setCulvert(name="TWRI EXAMPLE 8",
+                         type="circle",
+                         material="concrete",
+                         diameter=4,
+                         nvalue=0.012,
+                         beveling=0.075,
+                         zusinvert=1,
+                         L=50)
+flow <- computeFlow(culvert=my.culvert, approach=my.approach,
+                    h1=US.depth, h4=DS.depth)
+# 209 cfs in TWRI
+# 201 cfs in capR
+
+
+
+US.depth <- 8
+DS.depth <- 1
+my.approach <- setApproach(Lapproach=0,
+                           X=c(0,0,200,200), Y=c(15,0,0,15));
+my.culvert <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=4,
+                         is.barrel.rough=TRUE,
+                         nvalue=0.012,
+                         rounding=0.02,
+                         zusinvert=1,
+                         L=50)
+flow <- computeFlow(culvert=my.culvert, approach=my.approach,
+                    h1=US.depth, h4=DS.depth)
+# 141 cfs in capR

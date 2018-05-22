@@ -1,0 +1,21 @@
+ my.approach <- setApproach(Lapproach=60, nvalue=0.030,
+                            X=c(0,0,1000,1000), Y=c(15,0,0,15));
+
+ my.road <- setRoad(crown.elev=8.5, road.width=50,
+                    crest.lengths=data.frame(b=c(     0, 25, 100, 225),
+                                             elev=c(8.5,  9, 9.5, 10)),
+                    surface.type="paved");
+
+ my.culvert <- setCulvert(type="ellipse",
+                          material="concrete",
+                          diameter=2, span=4,
+                          nvalue=0.012,
+                          number.of.barrels=6,
+                          rounding=0.075,
+                          zusinvert=3,
+                          zdsinvert=1,
+                          L=60);
+
+computeFlow(culvert=my.culvert, approach=my.approach, h1=5, h4=4)
+
+# 171 cfs in capR

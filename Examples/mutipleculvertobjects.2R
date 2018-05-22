@@ -1,0 +1,159 @@
+US.depth <- 8
+DS.depth <- 5
+my.approach <- setApproach(Lapproach=6,
+                           X=c(0,0,20,20), Y=c(15,0,0,15));
+my.culvert1 <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=4,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         inlet.centerline=10,
+                         outlet.centerline=-10,
+                         is.bellmouthed=TRUE,
+                         zusinvert=1,
+                         L=50)
+my.culvert2 <- setCulvert(type="box",
+                         material="concrete",
+                         width=2, rise=10,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         slope=0.002,
+                         L=50)
+#flow <- computeFlow(culvert=my.culvert1, approach=my.approach,
+#                    h1=US.depth, h4=DS.depth)
+#flow <- computeFlow(culvert=my.culvert2, approach=my.approach,
+#                    h1=US.depth, h4=DS.depth)
+
+
+my.culverts <- new.h();
+set.h("1", my.culvert1, my.culverts);
+set.h("2", my.culvert2, my.culverts);
+rm(my.culvert1, my.culvert2);
+
+#each.h(get.h("1", my.culverts));
+#each.h(get.h("2", my.culverts));
+computeFlowSystem(h1=US.depth, h4=DS.depth,
+                  culverts=my.culverts, approach=my.approach);
+# Result is 277 cfs
+
+
+# The following repeats the computations, but manually. Note
+# the reset=FALSE that does not reset the TMP variables in the culverts
+# or approach after the initial spin up.
+computeFlowSystem.singlepass(h1=US.depth, h4=DS.depth,
+                  culverts=my.culverts, approach=my.approach);
+computeFlowSystem.singlepass(h1=US.depth, h4=DS.depth, reset=FALSE,
+                  culverts=my.culverts, approach=my.approach);
+computeFlowSystem.singlepass(h1=US.depth, h4=DS.depth, reset=FALSE,
+                  culverts=my.culverts, approach=my.approach);
+computeFlowSystem.singlepass(h1=US.depth, h4=DS.depth, reset=FALSE,
+                  culverts=my.culverts, approach=my.approach);
+computeFlowSystem.singlepass(h1=US.depth, h4=DS.depth, reset=FALSE,
+                  culverts=my.culverts, approach=my.approach);
+
+
+
+# Testing for minimum discharge
+setMinRecordablesSystem(hwpin=1.76, twpin=0.28, culvert=my.culverts);
+mq <- computeMinFlowSystemPin(culverts=my.culverts, approach=my.approach);
+# Result is 15.59 cfs.
+
+
+
+
+
+
+US.depth <- 5
+DS.depth <- 3
+my.approach <- setApproach(Lapproach=6,
+                           X=c(0,0,20,20), Y=c(15,0,0,15));
+my.culvert1 <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=4,
+                         number.of.barrels=1,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         is.bellmouthed=TRUE,
+                         slope=0,
+                         L=50);
+my.culvert5 <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=4,
+                         number.of.barrels=7,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         is.bellmouthed=TRUE,
+                         slope=0,
+                         L=50);
+computeFlow(h1=US.depth, h4=DS.depth,
+            culvert=my.culvert1, approach=my.approach);
+computeFlow(h1=US.depth, h4=DS.depth,
+            culvert=my.culvert5, approach=my.approach);
+
+
+
+
+my.culverts <- new.h();
+set.h("1", my.culvert1, my.culverts);
+set.h("2", my.culvert1, my.culverts);
+set.h("3", my.culvert1, my.culverts);
+set.h("4", my.culvert1, my.culverts);
+set.h("5", my.culvert1, my.culverts);
+set.h("6", my.culvert1, my.culverts);
+set.h("7", my.culvert1, my.culverts);
+set.h("8", my.culvert1, my.culverts);
+set.h("9", my.culvert1, my.culverts);
+set.h("10", my.culvert1, my.culverts);
+rm(my.culvert1);
+
+computeFlowSystem(h1=US.depth, h4=DS.depth, silent=TRUE,
+                  culverts=my.culverts, approach=my.approach);
+
+
+
+
+US.depth <- 9
+DS.depth <- 3
+my.approach <- setApproach(Lapproach=60,
+                           X=c(0,0,100,100), Y=c(15,0,0,15));
+
+my.road <- setRoad(crown.elev=7, road.width=50,
+                   crest.lengths=data.frame(b=c(0,100,400),
+                                            elev=c(4,10,11)),
+                   surface.type="gravel");
+my.culverts <- new.h();
+my.culvert1 <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=6,
+                         number.of.barrels=1,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         zusinvert=0.25,
+                         L=50,
+                         road=my.road);
+set.h("1", my.culvert1, my.culverts);
+my.culvert1 <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=3,
+                         number.of.barrels=1,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         zusinvert=3,
+                         zdsinvert=2,
+                         L=50);
+set.h("2", my.culvert1, my.culverts);
+my.culvert1 <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=3,
+                         number.of.barrels=1,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         zusinvert=3,
+                         zdsinvert=0.25,
+                         L=50);
+set.h("3", my.culvert1, my.culverts);
+rm(my.culvert1);
+
+computeFlowSystem(h1=US.depth, h4=DS.depth, silent=TRUE,
+                  culverts=my.culverts, approach=my.approach);
+

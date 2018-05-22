@@ -1,0 +1,190 @@
+"getPerfTW" <-
+function(HW, TW=NULL, culvert=NULL, approach=NULL, ...) {
+
+  if(is.null(TW)) TW <- 0;
+
+  Qs <- rep("NA", length(HW));
+  Qs.max <- Qs.min <- Qs;
+  for(i in 1:length(HW)) {
+    flow <- computeFlow(culvert=culvert,
+                        approach=approach,
+                        h1=HW[i],
+                        h4=TW, ...);
+    if(length(flow) == 1 && is.na(flow)) {
+      Qs[i] <- Qs.max[i] <- Qs.min[i] <- NA;
+    } else {
+      Qs[i]     <- flow$Qtotal;
+      Qs.max[i] <- flow$Qmax;
+      Qs.min[i] <- flow$Qmin;
+    }
+  }
+  return(list(HW=as.numeric(HW),
+              TW=as.numeric(TW),
+              Qmean=as.numeric(Qs),
+              Qmin=as.numeric(Qs.min),
+              Qmax=as.numeric(Qs.max)));
+}
+
+
+"getPerfHW" <-
+function(TW, HW=NULL, culvert=NULL, approach=NULL, ...) {
+
+  if(is.null(HW)) HW <- culvert$z;
+
+  Qs <- rep("NA", length(TW));
+  Qs.max <- Qs.min <- Qs;
+  for(i in 1:length(TW)) {
+    flow <- computeFlow(culvert=culvert,
+                        approach=approach,
+                        h1=HW,
+                        h4=TW[i], ...);
+    if(length(flow) == 1 && is.na(flow)) {
+      Qs[i] <- Qs.max[i] <- Qs.min[i] <- NA;
+    } else {
+      Qs[i]     <- flow$Qtotal;
+      Qs.max[i] <- flow$Qmax;
+      Qs.min[i] <- flow$Qmin;
+    }
+  }
+  return(list(TW=as.numeric(TW),
+              HW=as.numeric(HW),
+              Qmean=as.numeric(Qs),
+              Qmin=as.numeric(Qs.min),
+              Qmax=as.numeric(Qs.max)));
+}
+
+
+"getPerfTWtable" <-
+function(HW, TW=NULL, culvert=NULL, approach=NULL, ...) {
+
+  if(is.null(TW)) {
+     stop("Tailwater table (a data.frame with TW and Q columns) is NULL");
+  }
+
+  Qs <- rep("NA", length(HW));
+  TWs <- Qs.max <- Qs.min <- Qs;
+  previous.flow <- 0; # origin of flow
+  previous.TW <- approx(TW$Q, y=TW$TW, xout=previous.flow, rule=2)$y;
+  for(i in 1:length(HW)) {
+    if(previous.TW >= HW[i]) next;
+    flow <- computeFlow(culvert=culvert,
+                         approach=approach,
+                         h1=HW[i],
+                         h4=previous.TW, ...);
+    if(length(flow) == 1 && is.na(flow)) {
+      Qs[i] <- Qs.max[i] <- Qs.min[i] <- NA;
+    } else {
+      Qs[i]     <- flow$Qtotal;
+      Qs.max[i] <- flow$Qmax;
+      Qs.min[i] <- flow$Qmin;
+      TWs[i]    <- previous.TW;
+    }
+    previous.TW <- approx(TW$Q, y=TW$TW, xout=Qs[i], rule=2)$y;
+  }
+  return(list(HW=as.numeric(HW),
+              TW=as.numeric(TWs),
+              Qmean=as.numeric(Qs),
+              Qmin=as.numeric(Qs.min),
+              Qmax=as.numeric(Qs.max)));
+}
+
+
+
+"getPerfHWtable" <-
+function(TW, HW=NULL, culvert=NULL, approach=NULL, ...) {
+
+  if(is.null(HW)) {
+     stop("Headwater table (a data.frame with HW and Q columns) is NULL");
+  }
+
+  Qs <- rep("NA", length(TW));
+  HWs <- Qs.max <- Qs.min <- Qs;
+  previous.flow <- 0; # origin of flow
+  previous.HW <- approx(HW$Q, y=HW$HW, xout=previous.flow, rule=2)$y;
+  for(i in 1:length(TW)) {
+    if(previous.HW >= TW[i]) next;
+    flow <- computeFlow(culvert=culvert,
+                         approach=approach,
+                         h1=previous.HW,
+                         h4=HW[i], ...);
+    if(length(flow) == 1 && is.na(flow)) {
+      Qs[i] <- Qs.max[i] <- Qs.min[i] <- NA;
+    } else {
+      Qs[i]     <- flow$Qtotal;
+      Qs.max[i] <- flow$Qmax;
+      Qs.min[i] <- flow$Qmin;
+      HWs[i]    <- previous.HW;
+    }
+    previous.HW <- approx(HW$Q, y=HW$HW, xout=Qs[i], rule=2)$y;
+  }
+  return(list(TW=as.numeric(TW),
+              HW=as.numeric(HWs),
+              Qmean=as.numeric(Qs),
+              Qmin=as.numeric(Qs.min),
+              Qmax=as.numeric(Qs.max)));
+}
+
+
+#################################################################
+"getPerfTW.FlowSystem" <-
+function(HW, TW=NULL, culverts=NULL, approach=NULL,
+         showperf=FALSE, monotonic=TRUE, ...) {
+
+  if(is.null(TW)) TW <- 0;
+
+  Qs <- rep(NA, length(HW));
+  Qs.max <- Qs.min <- deltaQs <- Qs;
+  for(i in 1:length(HW)) {
+    flow <- computeFlowSystem(culvert=culverts,
+                              approach=approach,
+                              h1=HW[i],
+                              h4=TW, ...);
+    Q <- flow$Qtotal;
+    Qs[i] <- Q;
+    ifelse(i == 1, deltaQ <- 0, deltaQ <- Q - Qs[i-1]);
+    deltaQs[i] <- deltaQ;
+    if(showperf) {
+      catme(HW[i],TW,Q,round(deltaQ, digits=3));
+    }
+  }
+  if(monotonic) {
+     HW <- HW[deltaQs >= 0];
+     Qs <- Qs[deltaQs >= 0];
+  }
+  return(list(HW=as.numeric(HW),
+              TW=as.numeric(TW),
+              Qmean=as.numeric(Qs)
+             ));
+}
+
+
+"getPerfHW.FlowSystem" <-
+function(TW, HW=NULL, culverts=NULL, approach=NULL,
+         showperf=FALSE, monotonic=TRUE, ...) {
+
+  if(is.null(HW)) HW <- culvert$z;
+
+  Qs <- rep(NA, length(TW));
+  Qs.max <- Qs.min <- deltaQs <- Qs;
+  for(i in 1:length(TW)) {
+    flow <- computeFlowSystem(culvert=culverts,
+                              approach=approach,
+                              h1=HW,
+                              h4=TW[i], ...);
+    Q <- flow$Qtotal;
+    Qs[i] <- Q;
+    ifelse(i == 1, deltaQ <- 0, deltaQ <- Q - Qs[i-1]);
+    deltaQs[i] <- deltaQ;
+    if(showperf) {
+       catme(HW,TW[i],Q,round(deltaQ, digits=3));
+    }
+  }
+  if(monotonic) {
+     TW <- TW[deltaQs >= 0];
+     Qs <- Qs[deltaQs >= 0];
+  }
+  return(list(HW=as.numeric(HW),
+              TW=as.numeric(TW),
+              Qmean=as.numeric(Qs)
+             ));
+}

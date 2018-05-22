@@ -1,0 +1,34 @@
+id <- "080808750";  # STEP 1, DECLARE THE ID NUMBER
+nm <- "Callahan Draw near Lockney, Texas"; # STEP 2, SAME FOR NAME
+# STEP 3, MAKE A GR-CARD VECTOR
+GR <- c(-408.2,  5.01, -126.1,  3.40, -85.8,  3.17,  -64.0,  2.70,
+         -54.5,  2.01,  -41.1, 1.18,  -18.5,  4.61,      0,  7.07);
+
+# STEP 4, CREATE AN APPROACH OBJECT
+my.approach <- setApproach(Lapproach=21.7, nvalue=0.03, XY=GR);
+
+# STEP 5, CREATE A CULVERT OBJECT (LOTS AND LOTS OF ARGUMENTS)
+my.culvert <- setCulvert(station.id=id,
+                         station.name=nm,
+                         type="box",
+                         material="concrete",
+                         width=18,
+                         diameter=4,
+                         web=2,
+                         theta=35,
+                         nvalue=0.013,
+                         beveling=0.02,
+                         zusinvert=1.47,
+                         zdsinvert=1.10,
+                         L=37.3);
+
+# STEP 6, COMPUTE A SINGLE FLOW
+computeFlow(culvert=my.culvert, approach=my.approach,
+            h1=2.79, h4=2.73);
+
+# STEP 7, COMPUTE A HYDROGRAPH OR SIMPLY MULTIPLE VALUES
+US <- c(3.89, 3.17, 2.79, 2.27, 3.39);
+DS <- c(3.41, 2.86, 2.73, 1.83, 3.22);
+RE <- capgraph(h1=US, h4=DS, culvert=my.culvert, approach=my.approach);
+
+

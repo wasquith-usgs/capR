@@ -1,0 +1,135 @@
+"area.by.coords" <-
+function(x, y) {
+   x <- c(x, x[1]);
+   y <- c(y, y[1]);
+   n <- length(y);
+   tmpA <- y[1:(n-1)]*x[2:n]+y[n]*x[1];
+   tmpB <- y[2:n]*x[1:(n-1)]+y[1]*x[n];
+   A <- abs(sum(tmpA) - sum(tmpB))/2;
+   return(A);
+}
+
+#area.by.coords(c(300, 400, 600, 1000, 1200),
+#               c(300, 800, 1200, 1000, 400))
+# correct answer is 520,000
+
+
+"calculateEllipse" <-
+function(depth=1, rise=1, span=4, angle=90, steps=7200)  {
+  b <- span/2;
+  a <- rise/2;
+  beta <- -90 * (pi/180);
+  sinbeta <- sin(beta);
+  cosbeta <- cos(beta);
+
+  i <- seq(-180, 180, by=360/steps);
+  alpha <- i*(pi/180) ;
+  sinalpha <- sin(alpha);
+  cosalpha <- cos(alpha);
+
+  x <- 0;
+  y <-  rise/2;
+  X <- x + (a * cosalpha * cosbeta - b * sinalpha * sinbeta);
+  Y <- y + (a * cosalpha * sinbeta + b * sinalpha * cosbeta);
+
+  X <- X[Y < depth*rise];
+  Y <- Y[Y < depth*rise];
+
+  n <- length(Y);
+  if(n < 2) {
+    X <- Y <- ymax1 <- ymax2 <- x1 <- x2 <- TW <- WP <- 0;
+    A <- HR <- 0;
+  } else {
+    ymax1 <- Y[1];
+    ymax2 <- Y[n];
+    x.edge <- X[Y == ymax1];
+    if(length(x.edge) != 2) x.edge <- c(x.edge, X[Y == ymax2]);
+    TW <- x.edge[2] - x.edge[1];
+    WP <- sum(sqrt((X[2:n] - X[1:(n-1)])^2 + (Y[2:n] - Y[1:(n-1)])^2));
+    A <- area.by.coords(X,Y);
+    HR <- A/WP;
+  }
+
+  z <- list(x=X, y=Y,
+            y.top=c(ymax1, ymax2),
+            x.edge=x.edge,
+            TW = TW,
+            WP = WP,
+            A  = A,
+            HR = HR);
+  return(z);
+ }
+
+#XY <- calculateEllipse(depth=0.75, rise=2, span=2);
+#plot(XY$x, XY$y, type="l");
+#print(XY$A);
+#print(XY$TW);
+#print(XY$WP);
+#print(XY$HR);
+#points(XY$x[1], XY$y[1]);
+
+
+
+
+
+"ARELLIPSE.bycoord" <-
+function(depth=NULL, culvert=NULL, steps=7200)  {
+
+  # diameter and rise are SAME
+  diameter   <- culvert$diameter;
+  rise       <- culvert$rise;
+  span       <- culvert$span;
+  nvalue     <- culvert$nvalue;
+  manningcor <- culvert$manningcor;
+
+  if(is.null(depth) || depth > diameter) depth <- rise;
+  if(depth < 0) depth <- 0;
+
+  #rel.depth <- depth/rise;
+  a <- rise/2; b <- span/2;
+  beta <- -90 * (pi/180);
+  sinbeta <- sin(beta);
+  cosbeta <- cos(beta);
+
+  i <- seq(-180, 180, by=360/steps);
+  alpha <- i*(pi/180);
+  sinalpha <- sin(alpha);
+  cosalpha <- cos(alpha);
+
+  x <- 0;  y <- a;
+  X <- x + (a * cosalpha * cosbeta - b * sinalpha * sinbeta);
+  Y <- y + (a * cosalpha * sinbeta + b * sinalpha * cosbeta);
+
+  X <- X[Y < depth];
+  Y <- Y[Y < depth];
+
+  n <- length(Y);
+  if(n < 2) {
+    X <- Y <- ymax1 <- ymax2 <- x1 <- x2 <- 0;
+    topwidth <- wettedperimeter <- 0;
+    area <- hydraulicradius <- 0;
+  } else {
+    ymax1 <- Y[1];
+    ymax2 <- Y[n];
+    x.edge <- X[Y == ymax1];
+    if(length(x.edge) != 2) x.edge <- c(x.edge, X[Y == ymax2]);
+    topwidth <- x.edge[2] - x.edge[1];
+    wettedperimeter <- sum(sqrt((X[2:n] - X[1:(n-1)])^2 + (Y[2:n] - Y[1:(n-1)])^2));
+    area <- area.by.coords(X,Y);
+    hydraulicradius <- area/wettedperimeter;
+  }
+
+  konvey <- Conveyance(A=area, R=hydraulicradius, nvalue=nvalue,
+                       manningcor=manningcor);
+
+  z <- list(DEPTH=depth, D=diameter, RISE=rise,
+            SPAN=span, N=nvalue, A=area,
+            TW=topwidth, WP=wettedperimeter,
+            HR=hydraulicradius, KONVEY=konvey);
+  #print(z);
+  return(z);
+}
+
+ARELLIPSE <- ARELLIPSE.bycoord;
+
+

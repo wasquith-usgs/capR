@@ -1,0 +1,46 @@
+file <- file.choose(); # pick the file both.txt, which is merged from two RDBs
+UVs <- read.table(file, sep=",", na.strings=c("NA"), header=TRUE); # read it
+
+UVs <- UVs[! is.na(UVs$US),]; # remove NA values from US CSG
+UVs <- UVs[! is.na(UVs$DS),]; # remove NA values from DS CSG
+
+nUS <- UVs$US;
+nDS <- UVs$DS;
+#nUS <- UVs$US - 3.11; # offset by CSG pin height according to Harwell
+#nDS <- UVs$DS - 1.89; # offset by CSG pin height according to Harwell
+#nUS <- UVs$US - 2;
+#nDS <- UVs$DS - 2;
+
+my.approach <- setApproach(Lapproach=35, nvalue=0.03,
+                             X=c(-58.4, -30.8, 0.0, 12.5, 44.1, 92.8, 124.7),
+                             Y=c(5.95, 3.71, 2.77, 3.65, 4.20, 4.72, 6.91),
+                             fraction.of.flow=0.3);
+my.culvert <- setCulvert(station.id="07234150",
+         station.name="White Woman Creek tributary near Darrouzett, Texas",
+                           type="box",
+                           material="concrete",
+                           width=18,
+                           diameter=4,
+                           web=2,
+                           theta=45,
+                           thetabev=85,
+                           nvalue=0.021,
+                           beveling=0.017,
+                           min.recordable.hw=3.20,
+                           zusinvert=1.41,
+                           zdsinvert=0.71,
+                           L=57.35);
+
+# Now show Glenn that NO upstream gageheights greater than upstream invert.
+nUS[nUS > 1.41]
+numeric(0)
+
+# If viable values were available, then this single command will compute
+# all discharges!
+UV.Q <- capgraph(h1=nUS, h4=nDS, culvert=my.culvert,
+                 approach=my.approach);
+
+
+UV.Q <- capgraph(h1=nUS[67981:69101], h4=nDS[67981:69101],
+                 culvert=my.culvert, approach=my.approach);
+

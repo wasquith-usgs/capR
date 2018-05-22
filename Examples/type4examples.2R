@@ -1,0 +1,61 @@
+# EXAMPLE 6 IN TWRI
+US.depth <- 7
+DS.depth <- 5
+my.approach <- setApproach(Lapproach=6,
+                           X=c(0,0,200,200), Y=c(15,0,0,15));
+my.culvert <- setCulvert(name="TWRI EXAMPLE 6",
+                         type="circle",
+                         material="concrete",
+                         diameter=4,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         is.bellmouthed=TRUE,
+                         slope=0,
+                         L=50)
+flow <- computeFlow(culvert=my.culvert, approach=my.approach,
+                    h1=US.depth, h4=DS.depth)
+# 125 cfs in TWRI
+# 125 cfs in capR
+
+
+
+
+US.depth <- 8.5
+DS.depth <- 5
+my.approach <- setApproach(Lapproach=6,
+                           X=c(0,0,200,200), Y=c(15,0,0,15));
+my.road <- setRoad(crown.elev=6.5, road.width=50, surface.type="gravel",
+                   crest.lengths=data.frame(b=c(0,100,400),
+                                            elev=c(6,8,10)));
+my.culvert <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=4,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         is.bellmouthed=TRUE,
+                         slope=0,
+                         L=50,
+                         road=my.road)
+flow <- computeFlow(culvert=my.culvert, approach=my.approach,
+                    h1=US.depth, h4=DS.depth)
+# 1657 cfs in capR
+
+US.depth <- 8.5
+DS.depth <- 5
+my.approach <- setApproach(Lapproach=6,
+                           X=c(0,0,200,200), Y=c(15,0,0,15));
+my.road <- setRoad(crown.elev=6.5, road.width=50, surface.type="gravel",
+                   crest.lengths=data.frame(b=c(0,100,400),
+                                               elev=c(6,8,10)));
+my.culvert <- setCulvert(type="circle",
+                         material="concrete",
+                         diameter=4,
+                         nvalue=0.012,
+                         rounding=0.075,
+                         is.bellmouthed=TRUE,
+                         slope=0, inlet.depression=1, outlet.depression=0,
+                         L=50,
+                         road=my.road)
+flow <- computeFlow(culvert=my.culvert, approach=my.approach,
+                    h1=US.depth, h4=DS.depth)
+# 1621 cfs in capR

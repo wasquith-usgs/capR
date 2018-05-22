@@ -1,0 +1,41 @@
+US.depth <- 3.58
+DS.depth <- 2.90
+my.approach <- setApproach(Lapproach=35, nvalue=0.03,
+                             X=c(-58.4, -30.8, 0.0, 12.5, 44.1, 92.8, 124.7),
+                             Y=c(5.95, 3.71, 2.77, 3.65, 4.20, 4.72, 6.91),
+                             fraction.of.flow=0.3);
+my.culvert <- setCulvert(station.id="07234150",
+         station.name="White Woman Creek tributary near Darrouzett, Texas",
+                           type="box",
+                           material="concrete",
+                           width=18,
+                           diameter=4,
+                           web=2,
+                           theta=45,
+                           thetabev=85,
+                           nvalue=0.021,
+                           beveling=0.017,
+                           zusinvert=1.41,
+                           zdsinvert=0.71,
+                           L=57.35)
+computeFlow(culvert=my.culvert, approach=my.approach,
+                 h1=US.depth, h4=DS.depth);
+                 
+                 
+capgraph(culvert=my.culvert, approach=my.approach,
+          h1=US.depth, h4=DS.depth, ask=FALSE);
+
+
+
+my.approach.left <- setApproach(nvalue=0.03,
+                                X=c(-58.4, -30.8, 0.0, 12.5, 44.1, 92.8, 124.7),
+                                Y=c(5.95, 3.71, 2.77, 3.65, 4.20, 4.72, 6.91));
+my.approach.right <- setApproach(nvalue=0.03,
+                                X=c(-58.4, -30.8, 0.0, 12.5, 44.1, 92.8, 124.7),
+                                Y=c(5.95, 3.71, 2.77, 3.65, 4.20, 4.72, 6.91));
+my.approach.h <- setApproach(Lapproach=0, nvalue=0.03,
+                             X=c(-58.4, -30.8, 0.0, 12.5, 44.1, 92.8, 124.7),
+                             Y=c(5.95, 3.71, 2.77, 3.65, 4.20, 4.72, 6.91),
+                             left.approach=my.approach.left,
+                             right.approach=my.approach.right);
+

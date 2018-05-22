@@ -1,0 +1,20 @@
+my.approach <- setApproach(Lapproach=60,
+                           X=c(0,0,1000,1000), Y=c(15,0,0,15));
+my.culvert <- setCulvert(type="ellipse",
+                          material="concrete",
+                          diameter=2, span=4,
+                          nvalue=0.012,
+                          number.of.barrels=1,
+                          rounding=0.075,
+                          zusinvert=3,
+                          zdsinvert=1,
+                          L=60);
+
+computeFlow(culvert=my.culvert, approach=my.approach, h1=3.5, h4=0);
+
+
+PC <- getPerfTW(seq(.1,9,by=.1), TW=0,
+                culvert=my.culvert, approach=my.approach);
+
+plot(PC$HW, PC$Qmean, type="l");
+

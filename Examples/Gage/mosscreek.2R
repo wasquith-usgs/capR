@@ -1,0 +1,26 @@
+
+my.approach <- setApproach(Lapproach=42,
+                           nvalue=0.03,
+                           XY=c(-84.2, 21.6, -76.4, 19.6, -74.2, 17.7,
+                                -70.1, 15.0, -69.9, 14.3, -63.1, 12.4,
+                                -60.2, 11.1, -58.1, 10.9, -50.3, 12.5,
+                                -36.9, 15.0, -30.3, 17.4, -15.0, 20.5,
+                                -12.1, 21.8));
+my.culvert <- setCulvert(station.id="08435660",
+         station.name="Moss Creek near Alpine, Texas",
+                           type="box",
+                           material="concrete",
+                           width=42.2,
+                           diameter=7,
+                           web=5,
+                           theta=45,
+                           nvalue=0.015,
+                           beveling=0.03,
+                           zusinvert=11.4,
+                           zdsinvert=10.4,
+                           L=74.8);
+computeFlow(culvert=my.culvert, approach=my.approach,
+            h1=12.64, h4=11.54);
+
+
+

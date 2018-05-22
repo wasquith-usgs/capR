@@ -1,0 +1,31 @@
+file <- file.choose();
+UVs <- read.table(file, sep=",", header=TRUE);
+
+US <- UVs$UPSTREAMStage;
+DS <- UVs$DOWNSTREAMStage;
+
+my.approach <- setApproach(Lapproach=100, nvalue=0.035,
+                   X=c(-58.4, -30.8, 0.0, 12.5, 44.1, 92.8, 124.7),
+                   Y=c(5.95, 3.71, 2.77, 3.65, 4.20, 4.72, 6.91));
+my.culvert <- setCulvert(
+         station.id="07234150",
+         station.name="White Woman Creek tributary near Darrouzett, Texas",
+                           type="box",
+                           material="concrete",
+                           width=6,
+                           diameter=4,
+                           theta=85,
+                           thetabev=45,
+                           ignore.approach.velocity.head=TRUE,
+                           ignore.approach.losses=TRUE,
+                           number.of.barrels=3,
+                           nvalue=0.021,
+                           beveling=0.0166,
+                           zusinvert=1.41,
+                           zdsinvert=0.71,
+                           L=57.35);
+
+capgraph(h1=US, h4=DS, culvert=my.culvert,
+         approach=my.approach, ask=FALSE);
+
+

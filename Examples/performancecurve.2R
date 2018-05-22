@@ -1,0 +1,28 @@
+
+datum <- 90; # Elevation of invert of culvert outlet
+US.depths <- seq(100.5,116, by=0.05);
+
+my.approach <- setApproach(Lapproach=0,
+                           X=c(0,0,200,200), Y=c(150,0,0,150));
+my.culvert <- setCulvert(type="box",
+                         material="concrete",
+                         diameter=7, width=8,
+                         nvalue=0.012,
+                         rounding=0,
+                         slope=0.05,
+                         L=200);
+
+TWtable <- data.frame(TW=(c(0, 1.3, 2.6, 3.1, 3.8, 4.1, 4.5)+datum),
+                      Q=c(100, 250, 400, 600, 800, 1000, 1200));
+
+flow <- getPerfTWtable(US.depths-datum, TW=TWtable-datum,
+                       culvert=my.culvert,
+                       approach=my.approach, silent=TRUE);
+
+
+rng <- range(c(flow$Qmean, flow$Qmin, flow$Qmax))
+plot(flow$Qmin, flow$HW, type="l", xlim=rng, lty=2,
+     xlab="DISCHARGE, IN CUBIC FEET PER SECOND",
+     ylab="HEADWATER, IN FEET");
+lines(flow$Qmax, flow$HW, lty=2);
+lines(flow$Qmean, flow$HW, lty=1, lwd=2);

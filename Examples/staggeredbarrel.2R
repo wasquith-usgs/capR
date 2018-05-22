@@ -1,0 +1,199 @@
+# First, create a relatively simple approach that is 60 feet upstream
+# with a conventional n-value and square geometry with 15 foot high edges.
+ my.approach <- setApproach(Lapproach=60, nvalue=0.030,
+                            X=c(0,0,1000,1000), Y=c(15,0,0,15));
+# Second, create an optional road section, which will be incoporated in
+# an arbitrary culvert object to come later. This road is treated as a
+# broad-crested weir according to flow-over-embankment procedures by USGS.
+# The road begins flow at 8.5 gage height. The road is 50 feet wide in
+# the direction of flow. The crest lengths are stored in a table of
+# width of weir flow "b" and gage height.
+ my.road <- setRoad(crown.elev=8.5, road.width=50,
+                    crest.lengths=data.frame(b=c(     0, 25, 100, 225),
+                                             elev=c(8.5,  9, 9.5, 10)),
+                    surface.type="paved");
+
+# Third, in a staggered system, we need an R hash to store culvert objects.
+ my.culverts <- new.h(); # create the hash
+# Fourth, make a circular culvert and associate the road with this one.
+ my.culvert1 <- setCulvert(type="circle",
+                           material="concrete",
+                           diameter=5,
+                           number.of.barrels=1,
+                           nvalue=0.012,
+                           rounding=0.075,
+                           zusinvert=0,
+                           inlet.depression=1,
+                           outlet.depression=0.30,
+                           L=50,
+                           road=my.road);
+ set.h("1", my.culvert1, my.culverts); # place culvert in the hash
+ # Fifth, create another culvert--well six ellipses staggered with the
+ # previous circular section.
+ my.culvert1 <- setCulvert(type="ellipse",
+                          material="concrete",
+                          diameter=2, span=4,
+                          nvalue=0.012,
+                          number.of.barrels=6,
+                          rounding=0.075,
+                          zusinvert=3,
+                          zdsinvert=1,
+                          L=60);
+ set.h("2", my.culvert1, my.culverts); # again place culvert in the hash
+ rm(my.culvert1); # remove the "my.culvert1", which has been treated as
+ # only a temporary container, the hash "my.culverts" contains both
+ # culvert objects.
+
+ HWs <- seq(0.1, 10, by=.1); # create a vector of headwaters by 0.1 foot
+ # increments.
+
+ rm(PER0); # this is for cleanup---remove the performance curve object
+# COMPUTE THE RATING CURVE FOR A ZERO TAILWATER CONDITION.
+ PER0 <- getPerfTW.FlowSystem(HWs, TW=0, culverts=my.culverts,
+                              approach=my.approach, silent=TRUE,
+                              showperf=TRUE)
+ # PLOT THE RATING.
+ plot(log10(PER0$Qmean), PER0$HW, type="l", lwd=3, col=3)
+
+
+
+
+ rm(PER1)
+ PER1 <- getPerfTW.FlowSystem(HWs, TW=1, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER1$Qmean), PER1$HW, col=1)
+
+rm(PER2);
+ PER2 <- getPerfTW.FlowSystem(HWs, TW=2, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER2$Qmean), PER2$HW, col=1)
+
+rm(PER3)
+ PER3 <- getPerfTW.FlowSystem(HWs, TW=3, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER3$Qmean), PER3$HW, col=1)
+
+rm(PER4)
+ PER4 <- getPerfTW.FlowSystem(HWs, TW=4, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER4$Qmean), PER4$HW, col=1)
+
+rm(PER5)
+ PER5 <- getPerfTW.FlowSystem(HWs, TW=5, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER5$Qmean), PER5$HW, col=1)
+
+rm(PER6)
+ PER6 <- getPerfTW.FlowSystem(HWs, TW=6, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER6$Qmean), PER6$HW, col=1)
+
+rm(PER7)
+ PER7 <- getPerfTW.FlowSystem(HWs, TW=7, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER7$Qmean), PER7$HW, col=1)
+
+rm(PER8)
+ PER8 <- getPerfTW.FlowSystem(HWs, TW=8, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER8$Qmean), PER8$HW, col=1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+my.approach <- setApproach(Lapproach=60,
+                            X=c(0,0,1000,1000), Y=c(15,0,0,15));
+
+ my.road <- setRoad(crown.elev=8.5, road.width=50,
+                    crest.lengths=data.frame(b=c(     0, 25, 100, 225),
+                                             elev=c(8.5,  9, 9.5, 10)),
+                    surface.type="gravel");
+ my.culverts <- new.h();
+ my.culvert1 <- setCulvert(type="circle",
+                           material="concrete",
+                           diameter=5,
+                           number.of.barrels=1,
+                           nvalue=0.012,
+                           rounding=0.075,
+                           zusinvert=0,
+                           inlet.depression=1,
+                           outlet.depression=0.30,
+                           L=50,
+                           road=my.road);
+ set.h("1", my.culvert1, my.culverts);
+ my.culvert1 <- setCulvert(type="ellipse",
+                          material="concrete",
+                          diameter=6, span=4.25,
+                          nvalue=0.012,
+                          number.of.barrels=2,
+                          rounding=0.075,
+                          zusinvert=2,
+                          zdsinvert=1,
+                          L=60);
+set.h("2", my.culvert1, my.culverts);
+ my.culvert1 <- setCulvert(type="ellipse",
+                          material="concrete",
+                          diameter=4.25, span=10,
+                          nvalue=0.012,
+                          number.of.barrels=2,
+                          rounding=0.075,
+                          zusinvert=4,
+                          zdsinvert=1,
+                          L=60);
+ set.h("3", my.culvert1, my.culverts);
+ rm(my.culvert1);
+
+ HWs <- seq(0.1, 10, by=.1);
+
+ rm(PER0);
+ PER0 <- getPerfTW.FlowSystem(HWs, TW=0, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+
+ plot(log10(PER0$Qmean), PER0$HW, type="l", lwd=3, col=3)
+
+ rm(PER1)
+ PER1 <- getPerfTW.FlowSystem(HWs, TW=1, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER1$Qmean), PER1$HW, col=1)
+
+rm(PER2);
+ PER2 <- getPerfTW.FlowSystem(HWs, TW=2, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER2$Qmean), PER2$HW, col=1)
+
+rm(PER3)
+ PER3 <- getPerfTW.FlowSystem(HWs, TW=3, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER3$Qmean), PER3$HW, col=1)
+
+rm(PER4)
+ PER4 <- getPerfTW.FlowSystem(HWs, TW=4, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER4$Qmean), PER4$HW, col=1)
+
+rm(PER5)
+ PER5 <- getPerfTW.FlowSystem(HWs, TW=5, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER5$Qmean), PER5$HW, col=1)
+
+rm(PER6)
+ PER6 <- getPerfTW.FlowSystem(HWs, TW=6, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER6$Qmean), PER6$HW, col=1)
+
+rm(PER7)
+ PER7 <- getPerfTW.FlowSystem(HWs, TW=7, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER7$Qmean), PER7$HW, col=1)
+
+rm(PER8)
+ PER8 <- getPerfTW.FlowSystem(HWs, TW=8, culverts=my.culverts, approach=my.approach, silent=TRUE, showperf=TRUE)
+lines(log10(PER7$Qmean), PER8$HW, col=1)
+
+
+
+
+
+
+
+
+
+

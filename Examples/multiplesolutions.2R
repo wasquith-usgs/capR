@@ -1,0 +1,20 @@
+US <- 3.5;
+DS <- 2.2;
+
+X <- c(0, 200, 230, 430);
+Y <- c(100, 0, 0, 100);
+my.approach <- setApproach(X=X, Y=Y);
+
+my.culvert <- setCulvert(type="circle",
+                           material="concrete",
+                           diameter=4,
+                           rounding=0.008,
+                           nvalue=0.015,
+                           L=80,
+                           slope=0.01)
+
+Q <- computeFlow(h1=US, h4=DS, culvert=my.culvert, approach=my.approach);
+
+# Type 1: 39.4 cfs in capR
+# Type 3: 48.5 cfs in capR
+

@@ -1,0 +1,69 @@
+US <- 7.51;
+DS <- 7.40;
+
+XY <- data.frame(X=c(-733, -622, -290, -99, 0, 182, 469),
+                 Y=c(11.5, 8.7, 7.2, 5.0, 6.4, 8.0, 11.4));
+my.approach <- setApproach(Lapproach=16,
+                           nvalue=0.030,
+                           XY=XY);
+my.culvert <- setCulvert(name="08136200 Puddle Creek near Veribest, Texas",
+                           type="box",
+                           material="concrete",
+                           width=16,
+                           diameter=4,
+                           web=1,
+                           theta=0,
+                           nvalue=0.015,
+                           beveling=0,
+                           zusinvert=4.32,
+                           zdsinvert=4.32,
+                           inlet.depression=0,
+                           outlet.depression=0,
+                           L=41);
+
+Q <- computeFlow(h1=US, h4=DS, culvert=my.culvert, approach=my.approach);
+# 98.9 cfs in capR
+
+my.culvert <- setCulvert(name="08136200 Puddle Creek near Veribest, Texas",
+                           type="box",
+                           material="concrete",
+                           width=16,
+                           diameter=4,
+                           web=1,
+                           theta.left=45,
+                           theta.right=90,
+                           nvalue=0.015,
+                           beveling=0,
+                           zusinvert=4.32,
+                           zdsinvert=4.32,
+                           inlet.depression=0,
+                           outlet.depression=0,
+                           L=41);
+
+Q <- computeFlow(h1=US, h4=DS, culvert=my.culvert, approach=my.approach);
+# 108 cfs in capR
+
+my.culvert <- setCulvert(name="08136200 Puddle Creek near Veribest, Texas",
+                           type="box",
+                           material="concrete",
+                           width=16,
+                           diameter=4,
+                           web=1,
+                           theta.left=67.5,
+                           theta.right=67.5,
+                           nvalue=0.015,
+                           beveling=0,
+                           zusinvert=4.32,
+                           zdsinvert=4.32,
+                           inlet.depression=0,
+                           outlet.depression=0,
+                           L=41);
+
+Q <- computeFlow(h1=US, h4=DS, culvert=my.culvert, approach=my.approach);
+# 116 cfs in capR
+# 116 cfs in CAPGUI, ***but** CAPGUI configured for theta.left=45, theta.right=90!
+#            so code in CAPGUI is averaging thetas to get ktheta, which is NOT
+#            according to the TWRI on p. 41.  Compute discharge coefficients and
+#            then average those (loosely same as one would get in averaging the
+#            ktheta).
+

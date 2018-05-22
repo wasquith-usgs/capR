@@ -1,0 +1,12 @@
+KEY|VALUE
+station.id|"08127600"
+station.name|"Great station"
+#Lapproach|30
+X|0
+X|2
+X|18 20
+Y|11
+Y|1
+Y|.2 9
+XY|  34,10  45,21  45,32
+XY|  4,0  45,1  45,2

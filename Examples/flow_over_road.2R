@@ -1,0 +1,7 @@
+my.road <- setRoad(crown.elev=10, road.width=50,
+                   crest.lengths=data.frame(b=c(0,100,400),
+                                            elev=c(9,10,11)),
+                   surface.type="gravel");
+Qroad(h1=12, h4=2, v1head=0, road=my.road);
+
+# Should be 3,371 cfs.
