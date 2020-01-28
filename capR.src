@@ -5735,7 +5735,7 @@ function(delh=0, L=NULL, A1=NULL, A2=NULL, K1=NULL, K2=NULL,
    AAoAA <- (A2/A1)^2;
    denom <- KoK*L + KKoAA*(-alpha1*AAoAA*(1-k) + alpha2*(1-k));
    Q1 <- K2*sqrt(delh/denom);
-   
+
    v1head <- (Q1/A1)^2/g2;
    v2head <- (Q1/A2)^2/g2;
    if(treatexpansion) k <- ifelse(v1head - v2head > 0, 0.5, 0);
@@ -5764,8 +5764,8 @@ function(h1=NULL, h4=NULL, culvert=NULL, approach=NULL, digits=4) {
 
   A1     <- approach$geometry$AREATOTAL/approach$fraction.of.flow;
   alpha1 <- approach$geometry$alpha;
-  g2     <- 2*g;  
-  
+  g2     <- 2*g;
+
   road <- culvert$road; # properties of the road
   approachflow <- approach$TMP.accumulated.flow; # TOTAL COMPUTED FLOW
   v1head <- alpha1*(approachflow/A1)^2/g2;
@@ -5773,7 +5773,7 @@ function(h1=NULL, h4=NULL, culvert=NULL, approach=NULL, digits=4) {
 
   geo2 <- setCulvertGeometry(depth=h1, culvert=culvert,
                              location="inlet",
-                             depression=culvert$inlet.depression);   
+                             depression=culvert$inlet.depression);
   geo3 <- setCulvertGeometry(depth=h4, culvert=culvert,
                              location="outlet",
                              depression=culvert$outlet.depression);
@@ -5798,14 +5798,14 @@ function(h1=NULL, h4=NULL, culvert=NULL, approach=NULL, digits=4) {
               isTypeSAC=FALSE,
               valid=FALSE,
               roadflow=roadflow,
-              message="roadflow involved, but was trying slope-area flow"); 
+              message="roadflow involved, but was trying slope-area flow");
      return(Q);
   }
 
   delh <- h1 - h4;
   sac <- Qslopearea2sec(delh=h1-h4, L=L, A1=A2, A2=A3, K1=K2, K2=K3, g=g)
   valid <- ifelse(is.na(sac$Q), FALSE, TRUE);
-  
+
   Q <- list(Q=round(sac$Q*NB, digits=4),
             d2=h1,
             d3=h4,
@@ -5817,6 +5817,7 @@ function(h1=NULL, h4=NULL, culvert=NULL, approach=NULL, digits=4) {
             L=L,
             sac=sac,
             terminalarea=A3,
+            konvey2=K2,
             isTypeSAC=valid,
             valid=valid,
             roadflow=roadflow,
